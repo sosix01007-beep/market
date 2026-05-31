@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OASIS Market | by SO6iX OASIS</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1a1208;
+  --win-border:#6a4820;
+  --title-bg:linear-gradient(180deg,#5a3a18,#3a2510);
+  --filter-bg:linear-gradient(180deg,#4a3218,#382410);
+  --cat-bg:linear-gradient(180deg,#3a2810,#281a08);
+  --results-bg:linear-gradient(180deg,#f5e8c0,#ede0a8);
+  --bottom-bg:linear-gradient(180deg,#3a2810,#281a08);
+  --frame:#4a3010;--frame2:#6a4820;--frame3:#8a6030;
+  --parch:#c8a96e;--parch2:#b8955a;--parch3:#a07840;
+  --parch-dark:#2a1e0e;--parch-mid:#5a3e1e;--parch-muted:#8a6a3a;
+  --gold:#f0d080;
+  --t4:#4a7abf;--t5:#3a9a4a;--t6:#c8a820;--t7:#8a3abf;--t8:#c85020;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 12px}
+
+/* WINDOW */
+.win{width:100%;max-width:960px;background:linear-gradient(180deg,#3d2a10,#2a1e0c);border:3px solid var(--frame2);border-radius:8px;box-shadow:0 0 0 1px var(--win-border),0 8px 40px rgba(0,0,0,0.8)}
+
+/* TITLEBAR */
+.titlebar{background:var(--title-bg);border-bottom:2px solid var(--frame2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-radius:5px 5px 0 0}
+.t-left{display:flex;align-items:center;gap:12px}
+.t-icon{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c8a84b,#8a6020);border:2px solid var(--frame3);display:flex;align-items:center;justify-content:center;font-size:22px}
+.t-title{font-family:'Cinzel',serif;font-size:18px;color:var(--gold)}
+.t-sub{font-size:11px;color:var(--parch-muted);margin-top:2px}
+.t-right{display:flex;align-items:center;gap:8px}
+.silver-box{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.3);border:1px solid var(--frame3);border-radius:20px;padding:5px 12px}
+.silver-amt{font-family:'Cinzel',serif;font-size:13px;color:#a8d8f8;font-weight:600}
+.close-x{width:24px;height:24px;background:#8b1a1a;border:1px solid #c03030;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:#ffaaaa}
+.close-x:hover{background:#b02020}
+
+/* FILTERBAR */
+.filterbar{background:var(--filter-bg);border-bottom:2px solid var(--frame2);padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.gs-wrap{position:relative}
+.gs{appearance:none;background:linear-gradient(180deg,#5a3a18,#3a2208);border:1px solid var(--frame3);border-radius:4px;padding:6px 28px 6px 10px;font-size:12px;color:var(--parch);font-family:inherit;cursor:pointer;outline:none;min-width:110px}
+.gs:hover,.gs:focus{border-color:var(--parch2)}
+.gs-arrow{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--parch-muted);font-size:10px;pointer-events:none}
+.search-wrap{position:relative;flex:1;min-width:160px}
+.g-search{width:100%;background:linear-gradient(180deg,#2a1808,#1e1006);border:1px solid var(--frame3);border-radius:4px;padding:6px 32px 6px 10px;font-size:12px;color:var(--parch);font-family:inherit;outline:none}
+.g-search::placeholder{color:var(--parch-muted)}
+.g-search:focus{border-color:var(--parch)}
+.search-ico{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--parch-muted);font-size:13px;cursor:pointer}
+.search-ico:hover{color:var(--parch)}
+
+/* CATBAR */
+.catbar{background:var(--cat-bg);border-bottom:2px solid var(--frame2);padding:6px 14px;display:flex;gap:4px;flex-wrap:wrap;min-height:38px;align-items:center}
+.cat-item{position:relative}
+.cat-btn{background:linear-gradient(180deg,#5a3a18,#3a2208);border:1px solid var(--frame3);border-radius:4px;padding:5px 12px;font-size:12px;color:var(--parch);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.15s;white-space:nowrap}
+.cat-btn:hover,.cat-btn.open{background:linear-gradient(180deg,#7a5228,#5a3818);border-color:var(--parch2);color:var(--gold)}
+.cat-btn.active{border-color:var(--parch);color:var(--gold)}
+
+/* DROPDOWN L1 */
+.sub-menu{position:absolute;top:calc(100% + 3px);left:0;min-width:160px;background:linear-gradient(180deg,#4a3218,#2e1e0a);border:1px solid var(--frame3);border-radius:4px;padding:3px;z-index:500;display:none;box-shadow:0 6px 20px rgba(0,0,0,0.7)}
+.cat-item:hover .sub-menu{display:block}
+.sub-item{position:relative}
+.sub-btn{width:100%;background:transparent;border:none;border-radius:3px;padding:6px 10px;font-size:12px;color:var(--parch);cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;transition:background 0.1s;white-space:nowrap}
+.sub-btn:hover{background:rgba(200,168,75,0.15);color:var(--gold)}
+
+/* DROPDOWN L2 */
+.sub-menu2{position:absolute;top:0;left:calc(100% + 3px);min-width:160px;background:linear-gradient(180deg,#4a3218,#2e1e0a);border:1px solid var(--frame3);border-radius:4px;padding:3px;z-index:600;display:none;box-shadow:0 6px 20px rgba(0,0,0,0.7)}
+.sub-item:hover .sub-menu2{display:block}
+.leaf-btn{width:100%;background:transparent;border:none;border-radius:3px;padding:6px 10px;font-size:12px;color:var(--parch);cursor:pointer;font-family:inherit;text-align:left;transition:background 0.1s;white-space:nowrap}
+.leaf-btn:hover{background:rgba(200,168,75,0.15);color:var(--gold)}
+.leaf-btn.active{background:rgba(200,168,75,0.2);color:var(--gold);font-weight:500}
+.menu-div{height:1px;background:var(--frame2);margin:2px 4px}
+
+/* STATUS */
+.statusbar{padding:5px 14px;background:rgba(0,0,0,0.3);border-bottom:1px solid var(--frame2);display:none;align-items:center;gap:8px;font-size:12px;color:var(--parch-muted)}
+.dot{width:6px;height:6px;border-radius:50%;background:#4caf82;flex-shrink:0}
+.dot.spin{background:var(--parch2);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* RESULTS HEADER */
+.res-head{background:linear-gradient(180deg,#4a3218,#382510);border-bottom:1px solid var(--frame2);padding:7px 14px;display:grid;grid-template-columns:260px 140px 1fr 1fr 1fr;gap:8px;font-size:11px;color:var(--parch-muted);font-weight:500;text-transform:uppercase;letter-spacing:0.4px}
+
+/* RESULTS AREA */
+.res-area{background:var(--results-bg);min-height:280px;border-radius:0 0 5px 5px}
+
+/* RESULT ROW */
+.rrow{display:grid;grid-template-columns:260px 140px 1fr 1fr 1fr;gap:8px;padding:7px 14px;align-items:center;border-bottom:1px solid rgba(90,60,20,0.2);cursor:pointer;transition:background 0.1s}
+.rrow:last-child{border-bottom:none}
+.rrow:hover{background:rgba(200,168,75,0.12)}
+
+/* ITEM CELL */
+.i-cell{display:flex;align-items:center;gap:9px}
+.i-icon{width:44px;height:44px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px;position:relative;flex-shrink:0;overflow:hidden}
+.i-icon img{width:100%;height:100%;object-fit:cover;border-radius:3px}
+.i-frame{position:absolute;inset:0;border-radius:3px;border:2px solid}
+.i-tier{position:absolute;bottom:1px;left:1px;font-size:8px;font-weight:700;font-family:'Cinzel',serif;padding:1px 3px;border-radius:2px;line-height:1.4}
+.i-enchant{position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%}
+.t4-f{border-color:var(--t4);background:rgba(74,122,191,0.15)}.t4-t{background:var(--t4);color:#fff}
+.t5-f{border-color:var(--t5);background:rgba(58,154,74,0.15)}.t5-t{background:var(--t5);color:#fff}
+.t6-f{border-color:var(--t6);background:rgba(200,168,32,0.15)}.t6-t{background:var(--t6);color:#1a1000}
+.t7-f{border-color:var(--t7);background:rgba(138,58,191,0.15)}.t7-t{background:var(--t7);color:#fff}
+.t8-f{border-color:var(--t8);background:rgba(200,80,32,0.15)}.t8-t{background:var(--t8);color:#fff}
+.e1{background:#80c0ff}.e2{background:#ffdd44}.e3{background:#ff8844}
+
+.i-info{flex:1;min-width:0}
+.i-name{font-size:13px;color:var(--parch-dark);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.i-sub{font-size:11px;color:var(--parch-muted);margin-top:1px}
+
+/* OTHER CELLS */
+.city-cell{font-size:12px;color:var(--parch-mid);display:flex;align-items:center;gap:5px}
+.city-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.p-sell{font-size:13px;color:#1a5a20;font-weight:500}
+.p-buy{font-size:13px;color:#1a3a6a;font-weight:500}
+.p-zero{font-size:12px;color:var(--parch-muted)}
+.s-unit{font-size:10px;color:var(--parch-muted)}
+.t-cell{font-size:11px;color:var(--parch-muted)}
+
+/* EMPTY / LOADING */
+.empty{text-align:center;padding:60px 20px;color:var(--parch-muted)}
+.empty-ico{font-size:36px;margin-bottom:10px;filter:sepia(1) opacity(0.4)}
+.empty-t{font-family:'Cinzel',serif;font-size:14px;color:var(--parch-mid);margin-bottom:6px}
+.empty-s{font-size:12px}
+.loading{text-align:center;padding:40px;color:var(--parch-muted);font-size:13px}
+
+/* TOOLTIP */
+#tt{display:none;position:fixed;z-index:9999;pointer-events:none;min-width:230px;max-width:270px;background:linear-gradient(180deg,#3d2c14,#22180a);border:2px solid var(--frame3);border-radius:6px;overflow:hidden;box-shadow:0 0 0 1px #6a4820,0 12px 32px rgba(0,0,0,0.85)}
+.tt-top{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--frame2);background:linear-gradient(180deg,#4a3218,#362410)}
+.tt-img{width:52px;height:52px;flex-shrink:0;border-radius:4px;overflow:hidden;border:2px solid var(--frame3);background:#1a1008;position:relative}
+.tt-img img{width:100%;height:100%;object-fit:cover}
+.tt-img-tier{position:absolute;bottom:1px;left:1px;font-size:8px;font-weight:700;font-family:'Cinzel',serif;padding:1px 3px;border-radius:2px;line-height:1.4}
+.tt-h{flex:1;min-width:0}
+.tt-name{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);margin-bottom:3px}
+.tt-qual{font-size:11px;color:var(--parch-muted)}
+.tt-body{padding:8px 12px}
+.tt-row{display:flex;justify-content:space-between;gap:12px;margin-bottom:5px;font-size:12px}
+.tt-row:last-child{margin-bottom:0}
+.tt-lbl{color:var(--parch-muted)}
+.tt-val{color:var(--parch);font-weight:500}
+.tt-sell{color:#4caf82;font-weight:600}
+.tt-buy{color:#4a9eff;font-weight:600}
+.tt-hr{height:1px;background:var(--frame2);margin:5px 0}
+
+/* BOTTOMBAR */
+.bottombar{background:var(--bottom-bg);border-top:2px solid var(--frame2);padding:7px 14px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--parch-muted);border-radius:0 0 5px 5px}
+.credit{color:var(--parch2);font-family:'Cinzel',serif}
+
+@media(max-width:640px){
+  .res-head,.rrow{grid-template-columns:1fr 1fr 1fr}
+  .res-head>*:nth-child(n+4),.rrow>*:nth-child(n+4){display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="win">
+
+  <!-- TITLEBAR -->
+  <div class="titlebar">
+    <div class="t-left">
+      <div class="t-icon">🏪</div>
+      <div>
+        <div class="t-title">Asia Marketplace</div>
+        <div class="t-sub">Albion Online — East Server</div>
+      </div>
+    </div>
+    <div class="t-right">
+      <div class="silver-box">
+        <span>🪙</span>
+        <span class="silver-amt" id="silverAmt">—</span>
+      </div>
+      <div class="close-x">✕</div>
+    </div>
+  </div>
+
+  <!-- FILTERBAR -->
+  <div class="filterbar">
+    <div class="gs-wrap">
+      <select class="gs" id="selTier" onchange="onFilterChange()">
+        <option value="4">Tier IV</option>
+        <option value="5" selected>Tier V</option>
+        <option value="6">Tier VI</option>
+        <option value="7">Tier VII</option>
+        <option value="8">Tier VIII</option>
+      </select>
+      <span class="gs-arrow">▼</span>
+    </div>
+    <div class="gs-wrap">
+      <select class="gs" id="selEnchant" onchange="onFilterChange()">
+        <option value="0">No Enchant</option>
+        <option value="1">.1 — Blue</option>
+        <option value="2">.2 — Yellow</option>
+        <option value="3">.3 — Orange</option>
+      </select>
+      <span class="gs-arrow">▼</span>
+    </div>
+    <div class="gs-wrap">
+      <select class="gs" id="selQuality" onchange="onFilterChange()">
+        <option value="1">Normal</option>
+        <option value="2">Good</option>
+        <option value="3">Outstanding</option>
+        <option value="4">Excellent</option>
+        <option value="5">Masterpiece</option>
+      </select>
+      <span class="gs-arrow">▼</span>
+    </div>
+    <div class="gs-wrap">
+      <select class="gs" id="selCity" onchange="onFilterChange()">
+        <option value="all">All Cities</option>
+        <option value="Caerleon">Caerleon</option>
+        <option value="Bridgewatch">Bridgewatch</option>
+        <option value="Fort Sterling">Fort Sterling</option>
+        <option value="Lymhurst">Lymhurst</option>
+        <option value="Martlock">Martlock</option>
+        <option value="Thetford">Thetford</option>
+        <option value="Black Market">Black Market</option>
+      </select>
+      <span class="gs-arrow">▼</span>
+    </div>
+    <div class="search-wrap">
+      <input class="g-search" id="searchInput" type="text" placeholder="Search Item ID..." autocomplete="off">
+      <span class="search-ico" onclick="doSearch()">🔍</span>
+    </div>
+  </div>
+
+  <!-- CATBAR -->
+  <div class="catbar" id="catBar"></div>
+
+  <!-- STATUS -->
+  <div class="statusbar" id="statusBar">
+    <div class="dot" id="statusDot"></div>
+    <span id="statusText"></span>
+  </div>
+
+  <!-- RESULTS HEADER -->
+  <div class="res-head">
+    <div>Item</div><div>City</div><div>Sell Price</div><div>Buy Price</div><div>Updated</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="res-area" id="results">
+    <div class="empty">
+      <div class="empty-ico">⚔️</div>
+      <div class="empty-t">Select an Item</div>
+      <div class="empty-s">Choose from the category menu above</div>
+    </div>
+  </div>
+
+  <!-- BOTTOMBAR -->
+  <div class="bottombar">
+    <span>Real-time • Albion Online Data Project</span>
+    <span class="credit">by SO6iX OASIS</span>
+  </div>
+
+</div>
+
+<!-- TOOLTIP -->
+<div id="tt">
+  <div class="tt-top">
+    <div class="tt-img">
+      <img id="ttImg" src="" alt="">
+      <div class="tt-img-tier" id="ttTier"></div>
+    </div>
+    <div class="tt-h">
+      <div class="tt-name" id="ttName"></div>
+      <div class="tt-qual" id="ttQual"></div>
+    </div>
+  </div>
+  <div class="tt-body">
+    <div class="tt-row"><span class="tt-lbl">City</span><span class="tt-val" id="ttCity"></span></div>
+    <div class="tt-hr"></div>
+    <div class="tt-row"><span class="tt-lbl">💚 Sell</span><span class="tt-sell" id="ttSell"></span></div>
+    <div class="tt-row"><span class="tt-lbl">🔵 Buy</span><span class="tt-buy" id="ttBuy"></span></div>
+    <div class="tt-hr"></div>
+    <div class="tt-row"><span class="tt-lbl">🕐 Updated</span><span class="tt-val" id="ttTime"></span></div>
+  </div>
+</div>
+
+<script>
+/* ===== DATA ===== */
+const CATS = [
+  { label:'⚔️ Weapons', subs:[
+    { label:'Sword', items:[{n:'Sword',id:'MAIN_SWORD'},{n:'Broadsword',id:'MAIN_BROADSWORD'},{n:'Claymore',id:'2H_CLAYMORE'},{n:'Dual Swords',id:'2H_DUALSWORD'}]},
+    { label:'Axe', items:[{n:'Battleaxe',id:'MAIN_AXE'},{n:'Greataxe',id:'2H_AXE'},{n:'Hatchet',id:'MAIN_HATCHET'},{n:'Dualaxe',id:'2H_DUALAXE_AVALON'}]},
+    { label:'Dagger', items:[{n:'Dagger',id:'MAIN_DAGGER'},{n:'Dagger Pair',id:'2H_DUALDAGGER'},{n:'Claws',id:'2H_CLAWS'},{n:'Deathgivers',id:'2H_DUALDAGGER_HELL'}]},
+    { label:'Spear', items:[{n:'Spear',id:'MAIN_SPEAR'},{n:'Glaive',id:'2H_GLAIVE'},{n:'Pike',id:'2H_PIKE'}]},
+    { label:'Hammer', items:[{n:'Hammer',id:'MAIN_HAMMER'},{n:'Polehammer',id:'2H_POLEHAMMER'},{n:'Great Hammer',id:'2H_HAMMER'}]},
+    { label:'Crossbow', items:[{n:'Crossbow',id:'2H_CROSSBOW'},{n:'Light Crossbow',id:'MAIN_CROSSBOW'},{n:'Heavy Crossbow',id:'2H_CROSSBOWLARGE'},{n:'Boltcasters',id:'2H_CROSSBOW_PANDA'},{n:'Siegebow',id:'2H_CROSSBOWLARGE_MORGANA'}]},
+    { label:'Bow', items:[{n:'Bow',id:'2H_BOW'},{n:'Warbow',id:'2H_WARBOW'},{n:'Longbow',id:'2H_LONGBOW'}]},
+    { label:'Fire Staff', items:[{n:'Fire Staff',id:'MAIN_FIRESTAFF'},{n:'Great Fire Staff',id:'2H_FIRESTAFF'},{n:'Infernal Staff',id:'2H_INFERNOSTAFF_MORGANA'}]},
+    { label:'Frost Staff', items:[{n:'Frost Staff',id:'MAIN_FROSTSTAFF'},{n:'Great Frost Staff',id:'2H_FROSTSTAFF'}]},
+    { label:'Holy Staff', items:[{n:'Holy Staff',id:'MAIN_HOLYSTAFF'},{n:'Great Holy Staff',id:'2H_HOLYSTAFF'},{n:'Divine Staff',id:'2H_DIVINESTAFF'}]},
+    { label:'Nature Staff', items:[{n:'Nature Staff',id:'MAIN_NATURESTAFF'},{n:'Great Nature Staff',id:'2H_NATURESTAFF'}]},
+    { label:'Arcane Staff', items:[{n:'Arcane Staff',id:'MAIN_ARCANESTAFF'},{n:'Great Arcane Staff',id:'2H_ARCANESTAFF'}]},
+    { label:'Cursed Staff', items:[{n:'Cursed Staff',id:'MAIN_CURSEDSTAFF'},{n:'Great Cursed Staff',id:'2H_CURSEDSTAFF'}]},
+    { label:'Mace', items:[{n:'Mace',id:'MAIN_MACE'},{n:'Heavy Mace',id:'2H_MACE'},{n:'Camlann Mace',id:'2H_MACE_AVALON'}]},
+    { label:'Quarterstaff', items:[{n:'Quarterstaff',id:'2H_QUARTERSTAFF'},{n:'Iron-clad Staff',id:'2H_IRONCLADEDSTAFF'}]},
+  ]},
+  { label:'🛡️ Chest', subs:[
+    { label:'Cloth', items:[{n:'Adept Robe',id:'ARMOR_CLOTH_ADEPT'},{n:'Soldier Robe',id:'ARMOR_CLOTH_SOLDIER'},{n:'Scholar Robe',id:'ARMOR_CLOTH_SCHOLAR'},{n:'Mage Robe',id:'ARMOR_CLOTH_MAGE'},{n:'Royal Robe',id:'ARMOR_CLOTH_ROYAL'}]},
+    { label:'Leather', items:[{n:'Adept Jacket',id:'ARMOR_LEATHER_ADEPT'},{n:'Soldier Jacket',id:'ARMOR_LEATHER_SOLDIER'},{n:'Hunter Jacket',id:'ARMOR_LEATHER_HUNTER'},{n:'Royal Jacket',id:'ARMOR_LEATHER_ROYAL'}]},
+    { label:'Plate', items:[{n:'Adept Armor',id:'ARMOR_PLATE_ADEPT'},{n:'Soldier Armor',id:'ARMOR_PLATE_SOLDIER'},{n:'Knight Armor',id:'ARMOR_PLATE_KNIGHT'},{n:'Royal Armor',id:'ARMOR_PLATE_ROYAL'}]},
+  ]},
+  { label:'⛑️ Helmet', subs:[
+    { label:'Cloth', items:[{n:'Scholar Cowl',id:'HEAD_CLOTH_SCHOLAR'},{n:'Mage Cowl',id:'HEAD_CLOTH_MAGE'},{n:'Royal Cowl',id:'HEAD_CLOTH_ROYAL'},{n:'Cultist Cowl',id:'HEAD_CLOTH_HELL'}]},
+    { label:'Leather', items:[{n:'Soldier Hood',id:'HEAD_LEATHER_SOLDIER'},{n:'Hunter Hood',id:'HEAD_LEATHER_HUNTER'},{n:'Royal Hood',id:'HEAD_LEATHER_ROYAL'},{n:'Mercenary Hood',id:'HEAD_LEATHER_MERCENARY'}]},
+    { label:'Plate', items:[{n:'Soldier Helmet',id:'HEAD_PLATE_SOLDIER'},{n:'Knight Helmet',id:'HEAD_PLATE_KNIGHT'},{n:'Royal Helmet',id:'HEAD_PLATE_ROYAL'},{n:'Guardian Helmet',id:'HEAD_PLATE_GUARDIAN'}]},
+  ]},
+  { label:'👢 Boots', subs:[
+    { label:'Cloth', items:[{n:'Scholar Sandals',id:'SHOES_CLOTH_SCHOLAR'},{n:'Mage Sandals',id:'SHOES_CLOTH_MAGE'},{n:'Royal Sandals',id:'SHOES_CLOTH_ROYAL'},{n:'Cultist Sandals',id:'SHOES_CLOTH_HELL'}]},
+    { label:'Leather', items:[{n:'Hunter Shoes',id:'SHOES_LEATHER_HUNTER'},{n:'Soldier Boots',id:'SHOES_LEATHER_SOLDIER'},{n:'Royal Shoes',id:'SHOES_LEATHER_ROYAL'},{n:'Mercenary Shoes',id:'SHOES_LEATHER_MERCENARY'}]},
+    { label:'Plate', items:[{n:'Soldier Boots',id:'SHOES_PLATE_SOLDIER'},{n:'Knight Boots',id:'SHOES_PLATE_KNIGHT'},{n:'Royal Boots',id:'SHOES_PLATE_ROYAL'},{n:'Guardian Boots',id:'SHOES_PLATE_GUARDIAN'}]},
+  ]},
+];
+
+const TCLS = {4:'t4',5:'t5',6:'t6',7:'t7',8:'t8'};
+const TCOL = {4:'#4a7abf',5:'#3a9a4a',6:'#c8a820',7:'#8a3abf',8:'#c85020'};
+const ECLS = {1:'e1',2:'e2',3:'e3'};
+const QLBL = ['','Normal','Good','Outstanding','Excellent','Masterpiece'];
+const CCOL = {Caerleon:'#e05555',Bridgewatch:'#e8a020','Fort Sterling':'#9ab0c8',Lymhurst:'#4caf82',Martlock:'#4a9eff',Thetford:'#9b6fd4','Black Market':'#888'};
+
+let curItem = null;
+let activeLeaf = null;
+
+/* ===== BUILD MENU ===== */
+function buildMenu() {
+  const bar = document.getElementById('catBar');
+  bar.innerHTML = '';
+  CATS.forEach(cat => {
+    const wrap = document.createElement('div');
+    wrap.className = 'cat-item';
+
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.innerHTML = cat.label + ' <span style="font-size:9px;opacity:0.5">▶</span>';
+
+    const sub = document.createElement('div');
+    sub.className = 'sub-menu';
+
+    cat.subs.forEach((s, si) => {
+      const sWrap = document.createElement('div');
+      sWrap.className = 'sub-item';
+
+      const sb = document.createElement('button');
+      sb.className = 'sub-btn';
+      sb.innerHTML = s.label + ' <span style="font-size:9px;opacity:0.4">▶</span>';
+
+      const sub2 = document.createElement('div');
+      sub2.className = 'sub-menu2';
+
+      s.items.forEach(it => {
+        const lb = document.createElement('button');
+        lb.className = 'leaf-btn';
+        lb.textContent = it.n;
+        lb.addEventListener('click', () => {
+          if (activeLeaf) activeLeaf.classList.remove('active');
+          lb.classList.add('active');
+          activeLeaf = lb;
+          curItem = it;
+          fetchItem(it);
+        });
+        sub2.appendChild(lb);
+      });
+
+      sWrap.appendChild(sb);
+      sWrap.appendChild(sub2);
+      sub.appendChild(sWrap);
+      if (si < cat.subs.length - 1) {
+        const dv = document.createElement('div');
+        dv.className = 'menu-div';
+        sub.appendChild(dv);
+      }
+    });
+
+    wrap.appendChild(btn);
+    wrap.appendChild(sub);
+    bar.appendChild(wrap);
+  });
+}
+
+/* ===== HELPERS ===== */
+function fmtSilver(v) {
+  if (!v || v === 0) return null;
+  if (v >= 1000000) return (v/1000000).toFixed(2) + 'm';
+  if (v >= 1000) return (v/1000).toFixed(1) + 'k';
+  return v.toLocaleString();
+}
+function timeAgo(s) {
+  if (!s || s.startsWith('0001')) return '—';
+  const d = (Date.now() - new Date(s).getTime()) / 1000;
+  if (d < 60) return 'just now';
+  if (d < 3600) return Math.floor(d/60) + 'm ago';
+  if (d < 86400) return Math.floor(d/3600) + 'h ago';
+  return Math.floor(d/86400) + 'd ago';
+}
+function getIcon(id) {
+  const u = id.toUpperCase();
+  if (u.includes('SWORD')) return '⚔️';
+  if (u.includes('AXE')) return '🪓';
+  if (u.includes('DAGGER')||u.includes('CLAW')) return '🗡️';
+  if (u.includes('SPEAR')||u.includes('GLAIVE')||u.includes('PIKE')) return '🔱';
+  if (u.includes('HAMMER')||u.includes('MACE')) return '🔨';
+  if (u.includes('BOW')||u.includes('CROSSBOW')) return '🏹';
+  if (u.includes('STAFF')||u.includes('STAVE')) return '🪄';
+  if (u.includes('ARMOR')||u.includes('ROBE')||u.includes('JACKET')) return '🥋';
+  if (u.includes('HEAD')||u.includes('HOOD')||u.includes('HELMET')||u.includes('COWL')) return '⛑️';
+  if (u.includes('SHOES')||u.includes('BOOTS')||u.includes('SANDALS')) return '👢';
+  return '📦';
+}
+function buildId(baseId) {
+  const t = document.getElementById('selTier').value || '5';
+  const e = document.getElementById('selEnchant').value || '0';
+  return `T${t}_${baseId}${e>0?'@'+e:''}`;
+}
+function setStatus(loading, text) {
+  const bar = document.getElementById('statusBar');
+  bar.style.display = 'flex';
+  document.getElementById('statusDot').className = loading ? 'dot spin' : 'dot';
+  document.getElementById('statusText').textContent = text;
+}
+
+/* ===== FETCH ===== */
+function onFilterChange() { if (curItem) fetchItem(curItem); }
+
+function doSearch() {
+  const v = document.getElementById('searchInput').value.trim();
+  if (!v) return;
+  fetchRaw(v.toUpperCase().replace(/ /g,'_'));
+}
+
+async function fetchItem(it) {
+  const itemId = buildId(it.id);
+  document.getElementById('searchInput').value = itemId;
+  await fetchRaw(itemId);
+}
+
+async function fetchRaw(itemId) {
+  const quality = document.getElementById('selQuality').value || '1';
+  const cityVal = document.getElementById('selCity').value;
+  const cities = cityVal === 'all'
+    ? 'Caerleon,Bridgewatch,Fort Sterling,Lymhurst,Martlock,Thetford,Black Market'
+    : cityVal;
+
+  setStatus(true, `Loading ${itemId}...`);
+  document.getElementById('results').innerHTML = '<div class="loading">⏳ Fetching from Asia Server...</div>';
+
+  try {
+    const url = `https://east.albion-online-data.com/api/v2/stats/prices/${encodeURIComponent(itemId)}?locations=${encodeURIComponent(cities)}&qualities=${quality}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    const best = data.filter(d => d.sell_price_min > 0).sort((a,b) => a.sell_price_min - b.sell_price_min)[0];
+    document.getElementById('silverAmt').textContent = best ? fmtSilver(best.sell_price_min) : '—';
+
+    setStatus(false, `${data.length} results • ${new Date().toLocaleTimeString('th-TH')}`);
+    renderRows(data, itemId, parseInt(quality));
+  } catch(e) {
+    setStatus(false, 'Error');
+    document.getElementById('results').innerHTML = `<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-t">Could not load</div><div class="empty-s">${e.message}</div></div>`;
+  }
+}
+
+/* ===== RENDER ===== */
+function renderRows(data, itemId, quality) {
+  const el = document.getElementById('results');
+  const rows = data.filter(d => d.sell_price_min > 0 || d.buy_price_max > 0);
+  if (!rows.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-ico">📦</div><div class="empty-t">No listings found</div><div class="empty-s">Try different filters or city</div></div>';
+    return;
+  }
+  rows.sort((a,b) => (a.sell_price_min||Infinity) - (b.sell_price_min||Infinity));
+
+  const tier = parseInt((itemId.match(/^T(\d)/)||['','5'])[1]);
+  const enchant = parseInt((itemId.match(/@(\d)$/)||['','0'])[1]);
+  const tc = TCLS[tier] || 't5';
+  const baseId = itemId.replace(/@\d$/,'');
+  const icon = getIcon(itemId);
+
+  let html = '';
+  rows.forEach(d => {
+    const sell = d.sell_price_min > 0 ? fmtSilver(d.sell_price_min) : null;
+    const buy = d.buy_price_max > 0 ? fmtSilver(d.buy_price_max) : null;
+    const cc = CCOL[d.city] || '#888';
+    const age = timeAgo(d.sell_price_min_date);
+    const name = baseId.replace(/^T\d_/,'').replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
+    const enc = enchant > 0 ? `<div class="i-enchant ${ECLS[enchant]||''}"></div>` : '';
+    const imgUrl = `https://render.albiononline.com/v1/item/${baseId}.png?size=50&quality=${quality}`;
+
+    const dStr = JSON.stringify(d).replace(/'/g,"\\'").replace(/\\/g,'\\\\');
+
+    html += `<div class="rrow" onmouseenter="showTT(event,${JSON.stringify(d)},${JSON.stringify(itemId)},${quality})" onmouseleave="hideTT()">
+      <div class="i-cell">
+        <div class="i-icon ${tc}-f">
+          <img src="${imgUrl}" onerror="this.style.display='none';this.nextSibling.style.display='flex'" alt="">
+          <span style="display:none;font-size:20px">${icon}</span>
+          <div class="i-frame ${tc}-f"></div>
+          <div class="i-tier ${tc}-t">T${tier}${enchant>0?'.'+enchant:''}</div>
+          ${enc}
+        </div>
+        <div class="i-info">
+          <div class="i-name">${name}</div>
+          <div class="i-sub">${QLBL[quality]||'Normal'}</div>
+        </div>
+      </div>
+      <div class="city-cell"><div class="city-dot" style="background:${cc}"></div>${d.city}</div>
+      <div class="${sell?'p-sell':'p-zero'}">${sell?sell+'<span class="s-unit"> s</span>':'—'}</div>
+      <div class="${buy?'p-buy':'p-zero'}">${buy?buy+'<span class="s-unit"> s</span>':'—'}</div>
+      <div class="t-cell">${age}</div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+/* ===== TOOLTIP ===== */
+const ttEl = document.getElementById('tt');
+
+document.addEventListener('mousemove', e => {
+  if (ttEl.style.display === 'block') {
+    let x = e.clientX + 16, y = e.clientY + 8;
+    if (x + 280 > window.innerWidth) x = e.clientX - 285;
+    if (y + ttEl.offsetHeight > window.innerHeight) y = e.clientY - ttEl.offsetHeight - 8;
+    ttEl.style.left = x + 'px';
+    ttEl.style.top = y + 'px';
+  }
+});
+
+function showTT(e, d, itemId, quality) {
+  const tier = parseInt((itemId.match(/^T(\d)/)||['','5'])[1]);
+  const enchant = parseInt((itemId.match(/@(\d)$/)||['','0'])[1]);
+  const base = itemId.replace(/@\d$/,'');
+  const name = base.replace(/^T\d_/,'').replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
+  const tc = TCLS[tier]||'t5';
+  const tcol = TCOL[tier]||'#3a9a4a';
+
+  const img = document.getElementById('ttImg');
+  img.src = `https://render.albiononline.com/v1/item/${base}.png?size=60&quality=${quality}`;
+  img.style.display = 'block';
+
+  const tierEl = document.getElementById('ttTier');
+  tierEl.textContent = 'T'+tier+(enchant>0?'.'+enchant:'');
+  tierEl.style.background = tcol;
+  tierEl.style.color = tier===6?'#1a1000':'#fff';
+
+  document.getElementById('ttName').textContent = name;
+  document.getElementById('ttQual').textContent = (QLBL[quality]||'Normal') + (enchant>0?' · .'+enchant:'');
+  document.getElementById('ttCity').textContent = d.city;
+  document.getElementById('ttSell').textContent = d.sell_price_min > 0 ? d.sell_price_min.toLocaleString() + ' silver' : '—';
+  document.getElementById('ttBuy').textContent = d.buy_price_max > 0 ? d.buy_price_max.toLocaleString() + ' silver' : '—';
+  document.getElementById('ttTime').textContent = timeAgo(d.sell_price_min_date);
+
+  ttEl.style.display = 'block';
+  let x = e.clientX + 16, y = e.clientY + 8;
+  if (x + 280 > window.innerWidth) x = e.clientX - 285;
+  ttEl.style.left = x + 'px';
+  ttEl.style.top = y + 'px';
+}
+
+function hideTT() { ttEl.style.display = 'none'; }
+
+/* ===== INIT ===== */
+buildMenu();
+document.getElementById('searchInput').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
+</script>
+</body>
+</html>
